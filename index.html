@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Random Group Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 480px;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+
+    h1 {
+      margin-top: 0;
+      text-align: center;
+      font-size: 24px;
+    }
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin-top: 16px;
+      margin-bottom: 6px;
+    }
+
+    textarea,
+    input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: #667eea;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(102,126,234,0.4);
+    }
+
+    .group {
+      margin-top: 12px;
+      padding: 12px;
+      background: #f7f8fc;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+
+    .group strong {
+      display: block;
+      margin-bottom: 6px;
+      color: #333;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <h1>🎲 Random Group Generator</h1>
+
+    <label>Names</label>
+    <textarea id="namesInput" rows="4"
+      placeholder="Alice&#10;Bob&#10;Chris&#10;David"></textarea>
+
+    <label>People per group</label>
+    <input type="number" id="groupSizeInput" placeholder="e.g. 3" />
+
+    <button onclick="generateGroups()">Generate Groups</button>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function generateGroups() {
+      const namesText = document.getElementById("namesInput").value;
+      const groupSize = parseInt(document.getElementById("groupSizeInput").value);
+      const resultDiv = document.getElementById("result");
+
+      resultDiv.innerHTML = "";
+
+      if (!namesText || !groupSize || groupSize <= 0) {
+        alert("Please enter valid names and group size");
+        return;
+      }
+
+      let names = namesText
+        .split(/[\n,]/)
+        .map(n => n.trim())
+        .filter(n => n !== "");
+
+      // Shuffle
+      for (let i = names.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [names[i], names[j]] = [names[j], names[i]];
+      }
+
+      let groupNumber = 1;
+      for (let i = 0; i < names.length; i += groupSize) {
+        const group = names.slice(i, i + groupSize);
+
+        const div = document.createElement("div");
+        div.className = "group";
+        div.innerHTML = `
+          <strong>Group ${groupNumber}</strong>
+          ${group.join(", ")}
+        `;
+
+        resultDiv.appendChild(div);
+        groupNumber++;
+      }
+    }
+  </script>
+</body>
+</html>
