@@ -1,150 +1,564 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Random Group Generator</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Tournament Generator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 20px;
+}
 
-    .card {
-      background: #ffffff;
-      width: 100%;
-      max-width: 480px;
-      padding: 24px;
-      border-radius: 16px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-    }
+.container {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
 
-    h1 {
-      margin-top: 0;
-      text-align: center;
-      font-size: 24px;
-    }
+h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #2d3748;
+}
 
-    label {
-      font-weight: 600;
-      display: block;
-      margin-top: 16px;
-      margin-bottom: 6px;
-    }
+/* Input Section */
+.input-section {
+  background: #f8fafc;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+}
 
-    textarea,
-    input {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-      font-size: 14px;
-    }
+label {
+  font-weight: 600;
+  color: #4a5568;
+  display: block;
+  margin-bottom: 5px;
+}
 
-    textarea {
-      resize: vertical;
-    }
+textarea, input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  margin-bottom: 15px;
+}
 
-    button {
-      margin-top: 20px;
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 10px;
-      background: #667eea;
-      color: white;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: transform 0.1s ease, box-shadow 0.1s ease;
-    }
+textarea:focus, input:focus {
+  outline: none;
+  border-color: #667eea;
+}
 
-    button:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 20px rgba(102,126,234,0.4);
-    }
+.button-group {
+  display: flex;
+  gap: 10px;
+}
 
-    .group {
-      margin-top: 12px;
-      padding: 12px;
-      background: #f7f8fc;
-      border-radius: 10px;
-      font-size: 14px;
-    }
+button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex: 1;
+}
 
-    .group strong {
-      display: block;
-      margin-bottom: 6px;
-      color: #333;
-    }
-  </style>
+.btn-primary {
+  background: #667eea;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #5a67d8;
+}
+
+.btn-secondary {
+  background: #fc8181;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #f56565;
+}
+
+/* Groups Display */
+.groups-container {
+  margin: 30px 0;
+}
+
+.groups-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 15px;
+}
+
+.groups-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.group-item {
+  background: #f8fafc;
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+}
+
+.group-name {
+  font-weight: 700;
+  color: #4a5568;
+  margin-bottom: 8px;
+}
+
+.group-members {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.member {
+  background: white;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  border: 1px solid #e2e8f0;
+}
+
+/* Tournament Bracket - Table Based with Connectors */
+.tournament-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 30px 0 15px;
+}
+
+.bracket-wrapper {
+  overflow-x: auto;
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 30px 20px;
+  position: relative;
+}
+
+.bracket-table {
+  border-collapse: collapse;
+  margin: 0 auto;
+  position: relative;
+}
+
+.bracket-table td {
+  padding: 8px 25px;
+  vertical-align: middle;
+  position: relative;
+  min-width: 160px;
+}
+
+.round-header {
+  text-align: center;
+  font-weight: 600;
+  color: #667eea;
+  padding: 8px;
+  background: white;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.match-cell {
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  width: 160px;
+  position: relative;
+  z-index: 2;
+}
+
+.match-cell.team {
+  border-color: #667eea;
+  cursor: pointer;
+}
+
+.match-cell.team:hover {
+  background: #667eea;
+  color: white;
+}
+
+.match-cell.empty {
+  background: #f8fafc;
+  border-style: dashed;
+  color: #a0aec0;
+}
+
+.match-cell.champion {
+  background: linear-gradient(135deg, #f6e05e, #fbbf24);
+  border-color: #d69e2e;
+  color: #744210;
+  font-weight: bold;
+}
+
+/* Connector Lines */
+.line-container {
+  position: relative;
+}
+
+/* Horizontal lines */
+.bracket-table td:not(:last-child) .match-cell::after {
+  content: '';
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  width: 40px;
+  height: 2px;
+  background: #94a3b8;
+  transform: translateY(-50%);
+  z-index: 1;
+  margin-left: 5px;
+}
+
+/* Vertical lines for merging */
+.bracket-table tr:not(:last-child) td:not(:last-child) .match-cell {
+  position: relative;
+}
+
+/* Vertical line from first match to merge point */
+.bracket-table td:not(:last-child) .match-cell.merge-top::before {
+  content: '';
+  position: absolute;
+  right: -30px;
+  top: 50%;
+  width: 2px;
+  height: calc(100% + 30px);
+  background: #94a3b8;
+  transform: translateX(50%);
+  z-index: 1;
+}
+
+/* Vertical line from second match to merge point */
+.bracket-table td:not(:last-child) .match-cell.merge-bottom::before {
+  content: '';
+  position: absolute;
+  right: -30px;
+  bottom: 50%;
+  width: 2px;
+  height: calc(100% + 30px);
+  background: #94a3b8;
+  transform: translateX(50%);
+  z-index: 1;
+}
+
+/* Merge point indicator */
+.bracket-table td:not(:last-child) .match-cell.merge-point::after {
+  content: '';
+  position: absolute;
+  right: -45px;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  background: #667eea;
+  border-radius: 50%;
+  transform: translate(50%, -50%);
+  z-index: 3;
+  box-shadow: 0 0 0 2px white;
+}
+
+/* Champion Box */
+.champion-box {
+  margin-top: 30px;
+  text-align: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #f6e05e, #fbbf24);
+  border-radius: 12px;
+  color: #744210;
+}
+
+.champion-box h3 {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.champion-box .name {
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .bracket-table td {
+    padding: 5px 10px;
+    min-width: 120px;
+  }
+  
+  .match-cell {
+    width: 120px;
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+  
+  .bracket-table td:not(:last-child) .match-cell::after {
+    width: 15px;
+  }
+}
+</style>
 </head>
 
 <body>
-  <div class="card">
-    <h1>🎲 Random Group Generator</h1>
 
-    <label>Names</label>
-    <textarea id="namesInput" rows="4"
-      placeholder="Alice&#10;Bob&#10;Chris&#10;David"></textarea>
+<div class="container">
+  <h1>🏆 Tournament Generator</h1>
+
+  <div class="input-section">
+    <label>Enter Names (one per line)</label>
+    <textarea id="namesInput" rows="4">Team A
+Team B
+Team C
+Team D
+Team E
+Team F
+Team G
+Team H</textarea>
 
     <label>People per group</label>
-    <input type="number" id="groupSizeInput" placeholder="e.g. 3" />
+    <input id="groupSizeInput" type="number" min="1" value="2">
 
-    <button onclick="generateGroups()">Generate Groups</button>
-
-    <div id="result"></div>
+    <div class="button-group">
+      <button class="btn-primary" onclick="generate()">Generate Tournament</button>
+      <button class="btn-secondary" onclick="resetBracket()">Reset</button>
+    </div>
   </div>
 
-  <script>
-    function generateGroups() {
-      const namesText = document.getElementById("namesInput").value;
-      const groupSize = parseInt(document.getElementById("groupSizeInput").value);
-      const resultDiv = document.getElementById("result");
+  <div id="output"></div>
+</div>
 
-      resultDiv.innerHTML = "";
+<script>
+let bracketData = [];
+let groups = [];
 
-      if (!namesText || !groupSize || groupSize <= 0) {
-        alert("Please enter valid names and group size");
-        return;
-      }
+function generate() {
+  const namesText = document.getElementById("namesInput").value;
+  const groupSize = parseInt(document.getElementById("groupSizeInput").value);
 
-      let names = namesText
-        .split(/[\n,]/)
-        .map(n => n.trim())
-        .filter(n => n !== "");
+  if (!namesText || !groupSize) {
+    alert("Please fill in all fields");
+    return;
+  }
 
-      // Shuffle
-      for (let i = names.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [names[i], names[j]] = [names[j], names[i]];
-      }
+  let names = namesText.split(/\n/).map(x => x.trim()).filter(x => x);
+  
+  if (names.length === 0) {
+    alert("Please enter at least one name");
+    return;
+  }
 
-      let groupNumber = 1;
-      for (let i = 0; i < names.length; i += groupSize) {
-        const group = names.slice(i, i + groupSize);
+  // Ensure even number of teams
+  if (names.length % 2 !== 0) {
+    alert("Please enter an even number of names");
+    return;
+  }
 
-        const div = document.createElement("div");
-        div.className = "group";
-        div.innerHTML = `
-          <strong>Group ${groupNumber}</strong>
-          ${group.join(", ")}
-        `;
+  // Shuffle names
+  for (let i = names.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [names[i], names[j]] = [names[j], names[i]];
+  }
 
-        resultDiv.appendChild(div);
-        groupNumber++;
-      }
+  // Create groups
+  groups = [];
+  for (let i = 0; i < names.length; i += groupSize) {
+    groups.push(names.slice(i, i + groupSize));
+  }
+
+  // Create teams
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let teams = groups.map((g, i) => "Group " + letters[i]);
+
+  // Build bracket
+  bracketData = [];
+  let currentRound = teams;
+  
+  while (currentRound.length >= 1) {
+    bracketData.push([...currentRound]);
+    if (currentRound.length === 1) break;
+    
+    let nextRound = [];
+    for (let i = 0; i < currentRound.length / 2; i++) {
+      nextRound.push(null);
     }
-  </script>
+    currentRound = nextRound;
+  }
+
+  render();
+}
+
+function advanceWinner(roundIndex, matchIndex) {
+  const team = bracketData[roundIndex][matchIndex];
+  
+  if (!team || roundIndex + 1 >= bracketData.length) return;
+  
+  const nextRoundIndex = Math.floor(matchIndex / 2);
+  bracketData[roundIndex + 1][nextRoundIndex] = team;
+  
+  render();
+}
+
+function getRoundName(roundIndex, totalTeams) {
+  if (totalTeams === 8) {
+    if (roundIndex === 0) return "QUARTER FINALS";
+    if (roundIndex === 1) return "SEMI FINALS";
+    if (roundIndex === 2) return "FINAL";
+  } else if (totalTeams === 4) {
+    if (roundIndex === 0) return "SEMI FINALS";
+    if (roundIndex === 1) return "FINAL";
+  } else if (totalTeams === 2) {
+    if (roundIndex === 0) return "FINAL";
+  } else if (totalTeams === 16) {
+    if (roundIndex === 0) return "ROUND OF 16";
+    if (roundIndex === 1) return "QUARTER FINALS";
+    if (roundIndex === 2) return "SEMI FINALS";
+    if (roundIndex === 3) return "FINAL";
+  }
+  return `ROUND ${roundIndex + 1}`;
+}
+
+function render() {
+  const output = document.getElementById("output");
+  output.innerHTML = "";
+
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+  // Display Groups
+  if (groups.length > 0) {
+    let groupsHtml = '<div class="groups-title">📋 Groups</div><div class="groups-grid">';
+    
+    groups.forEach((group, i) => {
+      groupsHtml += `
+        <div class="group-item">
+          <div class="group-name">Group ${letters[i]}</div>
+          <div class="group-members">
+            ${group.map(m => `<span class="member">${m}</span>`).join('')}
+          </div>
+        </div>
+      `;
+    });
+    
+    groupsHtml += '</div>';
+    output.innerHTML += groupsHtml;
+  }
+
+  // Display Bracket
+  if (bracketData.length > 0) {
+    output.innerHTML += '<div class="tournament-title">🏆 Tournament Bracket</div>';
+    
+    const totalTeams = bracketData[0].length;
+    const totalRounds = bracketData.length;
+    
+    let tableHtml = '<div class="bracket-wrapper"><table class="bracket-table"><tr>';
+    
+    // Add round headers
+    for (let r = 0; r < totalRounds; r++) {
+      tableHtml += `<td><div class="round-header">${getRoundName(r, totalTeams)}</div></td>`;
+    }
+    tableHtml += '</tr>';
+    
+    // Create rows for matches
+    const rows = totalTeams; // Maximum rows needed
+    
+    for (let row = 0; row < rows; row++) {
+      tableHtml += '<tr>';
+      
+      for (let round = 0; round < totalRounds; round++) {
+        const matchesInRound = bracketData[round].length;
+        const rowSpan = Math.pow(2, round); // How many rows this match spans
+        
+        // Check if this row should contain a match
+        if (row % rowSpan === 0 && row / rowSpan < matchesInRound) {
+          const matchIndex = row / rowSpan;
+          const team = bracketData[round][matchIndex];
+          const isFinal = round === totalRounds - 1;
+          
+          tableHtml += '<td';
+          if (rowSpan > 1) {
+            tableHtml += ` rowspan="${rowSpan}"`;
+          }
+          tableHtml += '>';
+          
+          // Add merge indicators for lines
+          let additionalClasses = '';
+          if (round < totalRounds - 1 && matchIndex % 2 === 0) {
+            additionalClasses = ' merge-top';
+          } else if (round < totalRounds - 1 && matchIndex % 2 === 1) {
+            additionalClasses = ' merge-bottom';
+          }
+          
+          if (team) {
+            if (isFinal) {
+              tableHtml += `<div class="match-cell champion${additionalClasses}">👑 ${team} 👑</div>`;
+            } else {
+              tableHtml += `<div class="match-cell team${additionalClasses}" onclick="advanceWinner(${round}, ${matchIndex})">${team}</div>`;
+            }
+          } else {
+            tableHtml += `<div class="match-cell empty${additionalClasses}">TBD</div>`;
+          }
+          
+          tableHtml += '</td>';
+        }
+      }
+      
+      tableHtml += '</tr>';
+    }
+    
+    tableHtml += '</table></div>';
+    output.innerHTML += tableHtml;
+  }
+
+  // Display Champion
+  const lastRound = bracketData[bracketData.length - 1];
+  if (lastRound && lastRound[0]) {
+    output.innerHTML += `
+      <div class="champion-box">
+        <h3>🏆 CHAMPION 🏆</h3>
+        <div class="name">${lastRound[0]}</div>
+      </div>
+    `;
+  }
+}
+
+function resetBracket() {
+  if (confirm("Reset tournament?")) {
+    groups = [];
+    bracketData = [];
+    document.getElementById("output").innerHTML = "";
+  }
+}
+
+window.onload = function() {
+  // Add default data
+  const defaultNames = "Team A\nTeam B\nTeam C\nTeam D\nTeam E\nTeam F\nTeam G\nTeam H";
+  document.getElementById("namesInput").value = defaultNames;
+};
+</script>
+
 </body>
 </html>
